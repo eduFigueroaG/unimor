@@ -43,7 +43,9 @@
                 class="elevation-0"
                 hide-default-footer>
               <template v-slot:item.status="{ item }" >
-                {{item.status}}
+                <div class="text-center">
+                  <v-badge :color="item.status?'success':'red'"></v-badge>
+                </div>
               </template>
               <template v-slot:item.actions="{ item }" >
                 <div v-if="item.status" class="d-inline-flex">
