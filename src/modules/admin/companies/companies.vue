@@ -180,7 +180,7 @@ export default {
         { text: 'Nombre', value: 'name', 'width':200, sortable: false },
         { text: 'Telefono', value: 'phone' , sortable: false},
         { text: 'Descripcion', value: 'description',sortable: false},
-        { text: 'Estado', value: 'status',sortable: false},
+        { text: 'Estado', value: 'status',sortable: false,align: "center"},
         { text: 'Acciones', value: 'actions', sortable: false, align: "center" },
       ],
     }
