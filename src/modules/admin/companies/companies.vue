@@ -42,8 +42,11 @@
                 :items-per-page="10"
                 class="elevation-0"
                 hide-default-footer>
+              <template v-slot:item.status="{ item }" >
+                {{item.status}}
+              </template>
               <template v-slot:item.actions="{ item }" >
-                <div class="d-inline-flex">
+                <div v-if="item.status" class="d-inline-flex">
                   <v-tooltip top color="secondary" open-delay="700">
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
@@ -80,7 +83,7 @@
                   <v-tooltip top color="secondary" open-delay="700">
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                          @click="dialogChange(item.id)"
+                          @click="dialogChange(item.id,  item.status)"
                           text
                           dark
                           small
@@ -95,7 +98,25 @@
                     <span>Eliminar</span>
                   </v-tooltip>
                 </div>
-
+                <div v-else class="text-center">
+                  <v-tooltip top color="secondary" open-delay="700">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          @click="dialogChange(item.id, item.status)"
+                          text
+                          dark
+                          small
+                          color="red"
+                          v-bind="attrs"
+                          v-on="on">
+                        <v-icon color="success">
+                          mdi-check-circle
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Habilitar</span>
+                  </v-tooltip>
+                </div>
               </template>
             </v-data-table>
           </v-col>
@@ -117,15 +138,15 @@
       <v-dialog v-model="dialog" max-width="500px">
         <v-card>
           <v-card-title class="text-h6 text-center justify-center primary white--text">
-            ¿Estas seguro de deshabalitar esta empresa?
+            {{deleteTitle}}
           </v-card-title>
           <v-card-text class=" text-center mt-4">
-            <p>La empresa no podra ser consultada por usuarios</p>
+            <p>{{deleteDes}}</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="secondary" @click="dialogChange(null)" outlined>Cancelar</v-btn>
-            <v-btn color="primary" @click="changeCompanyStatus" >Eliminar</v-btn>
+            <v-btn color="primary" @click="changeCompanyStatus" >{{deleteAction}}</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -142,6 +163,9 @@ export default {
     return{
       dialog: false,
       deleteId: null,
+      deleteTitle: '',
+      deleteDes:'',
+      deleteAction: '',
       page: 1,
       itemsPerPage: 10,
       search: '',
@@ -154,14 +178,24 @@ export default {
         { text: 'Nombre', value: 'name', 'width':200, sortable: false },
         { text: 'Telefono', value: 'phone' , sortable: false},
         { text: 'Descripcion', value: 'description',sortable: false},
+        { text: 'Estado', value: 'status',sortable: false},
         { text: 'Acciones', value: 'actions', sortable: false, align: "center" },
       ],
     }
   },
   methods:{
-    dialogChange(id){
+    dialogChange(id, status){
       this.dialog = !this.dialog
       this.deleteId = id
+      if (status){
+        this.deleteTitle = " ¿Estas seguro de deshabalitar esta empresa?"
+        this.deleteDes = "La empresa no podra ser consultada por usuarios"
+        this.deleteAction = "ELIMINAR"
+      }else{
+        this.deleteTitle = " ¿Estas seguro de habilitar esta empresa?"
+        this.deleteDes = "La empresa volvera a ser consultada por usuarios"
+        this.deleteAction = "HABILITAR"
+      }
     },
     changeCompanyStatus(){
       axios.put('company/change/'+this.deleteId)
@@ -178,7 +212,7 @@ export default {
       })
     },
     getCompanies(page, search){
-      axios.get('company/all?page='+page)
+      axios.get('company/all/admin?page='+page)
       .then(res=>{
         console.log(res)
         if (res.status){
