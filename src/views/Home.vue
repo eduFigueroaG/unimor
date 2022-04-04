@@ -1,18 +1,13 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="text-center mt-16">
+    <h1 class="text-h1">404</h1>
+    <h3 class="text-h6 secondary--text">ERROR</h3>
+    <h3 class="text-overline accent--text">WE COULD NOT FIND THE PAGE YOU ARE LOOKING FOR</h3>
+    <v-btn color="primary" class="mt-5" to="/auth/login">BACK TO HOME</v-btn>
   </div>
 </template>
-
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
-  }
 }
 </script>
